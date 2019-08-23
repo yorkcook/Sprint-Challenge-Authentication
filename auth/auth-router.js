@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const Users = require("../jokes/jokes-model.js");
 const secrets = require("../config/secrets.js");
+const restricted = require("../auth/authenticate-middleware.js");
 
 router.post("/register", (req, res) => {
   // implement registration
@@ -43,6 +44,16 @@ router.post("/login", (req, res) => {
     })
     .catch(error => {
       res.status(500).json({ message: "You done got smurfed!!" });
+    });
+});
+
+router.get("/users", restricted, (req, res) => {
+  Users.getUsers()
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(error => {
+      res.status(500).json({ message: "You need dat token!" });
     });
 });
 
